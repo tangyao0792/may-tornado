@@ -1,6 +1,7 @@
 import socket
 from ioloop import IOLoop
 import ioloop
+import utils
 
 HOST = "127.0.0.1"
 BACKLOG = 100
@@ -18,9 +19,8 @@ class HTTPServer():
         add_accept_handler(self.socket, self._handle_connection, io_loop=self.io_loop)
 
     def _handle_connection(self, connection, address):
-        print address, 'in'
-        print connection.fileno()
-        pass
+        utils.log(connection.recv(1024).replace('\n', '').replace('\r', ''))
+        connection.send('HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s')
 
 def add_accept_handler(sock, call_back, io_loop=None):
     if io_loop is None:
